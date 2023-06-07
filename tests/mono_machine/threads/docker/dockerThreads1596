@@ -1,0 +1,6 @@
+FROM ubuntu:22.04
+
+RUN apt-get update && \
+    apt-get install -y sysbench
+
+ENTRYPOINT ["sysbench", "threads","--threads=1596", "run"]
