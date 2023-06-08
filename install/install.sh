@@ -2,7 +2,7 @@
 
 set -e
 
-source env_file
+source ../.env
 
 # Check the number of arguments
 if [ $# -lt 2 ]; then
