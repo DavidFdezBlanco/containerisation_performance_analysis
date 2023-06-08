@@ -1,0 +1,3 @@
+echo "To be done"
+
+# for nodes, If master node do ... if worker node do ...

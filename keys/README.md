@@ -1,0 +1,1 @@
+Place inside the keys needed to access your ssh machines, in our case it is youpi. However, we will not put our keys accessible in the repository.

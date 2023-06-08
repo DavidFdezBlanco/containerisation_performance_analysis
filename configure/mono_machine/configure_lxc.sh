@@ -1,0 +1,1 @@
+echo "No special configuration to do"
