@@ -10,7 +10,7 @@ for i in $(seq 1 30); do
     lxc info test-container$i | grep -q "Status:.*Running" || sleep 1
 
     # Exécuter le test Sysbench CPU run dans le conteneur et stocker la sortie dans un fichier texte en dehors du conteneur
-    lxc exec test-container$i -- sysbench cpu run > resultat_cpu$i.txt
+    lxc exec test-container$i -- sysbench mutex --threads=512 run > 512_mutex$i.txt
 
     # Supprimer le conteneur
     lxc stop test-container$i
