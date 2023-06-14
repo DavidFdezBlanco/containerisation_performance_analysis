@@ -3,6 +3,14 @@
 set -e
 
 source ../.env
+flags=""
+if [[ $USE_ENV == true ]]; then
+  echo "Using .env"
+  flags="-F $PATH_TO_SSH_CONFIG -i $PATH_TO_KEY"
+else
+  echo "Not using .env"
+fi
+
 source ../.topography
 
 # Check the number of arguments
@@ -50,19 +58,19 @@ for NODE_HOSTNAME in "${NODE_HOSTNAMES[@]}"; do
   validate_host_permissions "$NODE_HOSTNAME"
 
   echo "Installing $CONTAINER_ENGINE on node: $NODE_HOSTNAME"
-  
+
   # Copy the installation script to the target machine
-  scp "$(dirname "$0")/mono_machine/install_${CONTAINER_ENGINE}.sh" $NODE_HOSTNAME:/tmp/install_${CONTAINER_ENGINE}.sh
+  scp $flags "$(dirname "$0")/mono_machine/install_${CONTAINER_ENGINE}.sh" $NODE_HOSTNAME:/tmp/install_${CONTAINER_ENGINE}.sh
 
   # echo "here2"
 
   # SSH into the node and run the installation script
-  ssh $NODE_HOSTNAME "chmod +x /tmp/install_${CONTAINER_ENGINE}.sh && /tmp/install_${CONTAINER_ENGINE}.sh"
+  ssh $flags $NODE_HOSTNAME "chmod +x /tmp/install_${CONTAINER_ENGINE}.sh && /tmp/install_${CONTAINER_ENGINE}.sh"
 
   # Remove the copied installation script from the target machine
-  # ssh $NODE_HOSTNAME "rm /tmp/install_${CONTAINER_ENGINE}.sh"
+  ssh $flags $NODE_HOSTNAME "rm /tmp/install_${CONTAINER_ENGINE}.sh"
 
   echo "Install on $NODE_HOSTNAME ended."
 done
 
-# attention faire https://www.globo.tech/learning-center/sudo-unable-to-resolve-host-explained/ pour enlever l'erreur de root
+# attention do https://www.globo.tech/learning-center/sudo-unable-to-resolve-host-explained/ to resolve host not found when sudoing in ubuntu.
