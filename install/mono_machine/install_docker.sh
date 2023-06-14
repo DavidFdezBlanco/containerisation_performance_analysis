@@ -11,25 +11,30 @@ sudo apt-get update -y -qq
 
 # Install necessary packages
 echo "Installing needed libraries..."
-sudo apt-get install -y -qq apt-transport-https ca-certificates curl software-properties-common
+sudo apt-get install ca-certificates curl gnupg -y -qq
 
 # Add official Docker GPG key
 echo 'Adding GPG Key...'
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+sudo chmod a+r /etc/apt/keyrings/docker.gpg
 
 # Add Docker repository to list of package sources
 echo "Adding Docker repository to list of package sources..."
-sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" -y
+echo \
+  "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
 # Update packages list with Docker data
 echo "Updating apt package list with Docker data..."
-sudo apt-get update -qq
+sudo apt-get update -y -qq
 
 # Install Docker
 echo "Installing Docker..."
-sudo apt-get install -y -qq docker-ce
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y -qq
 
 # Check Docker version and operability
 echo "Checking Docker version and operability..."
 sudo docker -v
-sudo docker service ps
+sudo docker ps

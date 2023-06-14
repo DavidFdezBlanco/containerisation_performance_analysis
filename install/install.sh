@@ -3,11 +3,13 @@
 set -e
 
 source ../.env
+source ../.topography
 
 # Check the number of arguments
 if [ $# -lt 2 ]; then
+  echo "Please update the topography file if you haven't done it yet to contain the authorized IPs."
   echo "Usage: ./install.sh <node_ips> <container_engine>"
-  echo "Example: ./install.sh 192.168.0.1,192.168.0.2 docker"
+  echo "Example: ./install.sh device110,device111 docker (for this to work, both device110 and 111 need to be declared within the topography DOCKER_NODES)" 
   exit 1
 fi
 
@@ -21,51 +23,46 @@ if [[ ! " ${VALID_ENGINES[@]} " =~ " ${CONTAINER_ENGINE} " ]]; then
 fi
 
 # Extract the node IPs from the first argument
-IFS=',' read -ra NODE_IPS <<< "$1"
+IFS=',' read -ra NODE_HOSTNAMES <<< "$1"
+engine_node_variable_name=${CONTAINER_ENGINE^^}_NODES
+IFS=',' read -ra VALID_HOSTNAMES <<< "${!engine_node_variable_name}"
 
-# Validate the IP addresses
-validate_ip() {
-  local ip=$1
-  local valid_ip_regex="^([0-9]{1,3}\.){3}[0-9]{1,3}$"
+# Validate the hostnames
+validate_host_permissions() {
+  local hostname=$1
+  valid=false
 
-  if [[ ! $ip =~ $valid_ip_regex ]]; then
-    echo "Error: Invalid IP address: $ip"
+  for VALID_HOSTNAME in "${VALID_HOSTNAMES[@]}"; do
+    VALID_HOSTNAME=$(echo $VALID_HOSTNAME | sed 's/.$//')
+    if [[ "$hostname" == "$VALID_HOSTNAME" ]]; then
+      valid=true
+      break
+    fi
+  done
+
+  if [[ $valid == false ]]; then
+    echo "Invalid hostname. You are trying to install a $CONTAINER_ENGINE engine on a host with hostname $hostname, which is not within the authorized topography."
     exit 1
   fi
 }
 
-for NODE_IP in "${NODE_IPS[@]}"; do
-  validate_ip "$NODE_IP"
+for NODE_HOSTNAME in "${NODE_HOSTNAMES[@]}"; do
+  validate_host_permissions "$NODE_HOSTNAME"
+
+  echo "Installing $CONTAINER_ENGINE on node: $NODE_HOSTNAME"
+  
+  # Copy the installation script to the target machine
+  scp "$(dirname "$0")/mono_machine/install_${CONTAINER_ENGINE}.sh" $NODE_HOSTNAME:/tmp/install_${CONTAINER_ENGINE}.sh
+
+  # echo "here2"
+
+  # SSH into the node and run the installation script
+  ssh $NODE_HOSTNAME "chmod +x /tmp/install_${CONTAINER_ENGINE}.sh && /tmp/install_${CONTAINER_ENGINE}.sh"
+
+  # Remove the copied installation script from the target machine
+  # ssh $NODE_HOSTNAME "rm /tmp/install_${CONTAINER_ENGINE}.sh"
+
+  echo "Install on $NODE_HOSTNAME ended."
 done
 
-# Mono machine
-if [ "${#NODE_IPS[@]}" -eq 1 ]; then
-    echo "Installing on only one node: $NODE_IP"
-
-    # Copy the installation script to the target machine
-    scp -i ../keys/$KEY1 "$(dirname "$0")/mono_machine/install_${CONTAINER_ENGINE}.sh" user@$NODE_IP:/tmp/install_${CONTAINER_ENGINE}.sh
-
-    # SSH into the node and run the installation script
-    ssh -i ../keys/$KEY1 user@$NODE_IP "chmod +x /tmp/install_${CONTAINER_ENGINE}.sh && /tmp/install_${CONTAINER_ENGINE}.sh"
-
-    # Remove the copied installation script from the target machine
-    ssh -i ../keys/$KEY1 user@$NODE_IP "rm /tmp/install_${CONTAINER_ENGINE}.sh"
-else
-    echo "Installing $CONTAINER_ENGINE in a subset of following nodes. The master node will be the first of the list."
-
-    for NODE_IP in "${NODE_IPS[@]}"; do
-        echo "Installing on node: $NODE_IP"
-
-        # Copy the installation script to the target machine
-        scp -i ../keys/$KEY1 "$(dirname "$0")/multi_machine/install_${CONTAINER_ENGINE}.sh" user@$NODE_IP:/tmp/install_${CONTAINER_ENGINE}.sh
-
-        # SSH into the node and run the installation script
-        ssh -i ../keys/$KEY1 user@$NODE_IP "chmod +x /tmp/install_${CONTAINER_ENGINE}.sh && /tmp/install_${CONTAINER_ENGINE}.sh"
-
-        # Remove the copied installation script from the target machine
-        ssh -i ../keys/$KEY1 user@$NODE_IP "rm /tmp/install_${CONTAINER_ENGINE}.sh"
-    done
-fi
-
-  # SSH into the node and run the configuration script
-  ../configure/configure.sh $1 $2
+# attention faire https://www.globo.tech/learning-center/sudo-unable-to-resolve-host-explained/ pour enlever l'erreur de root
