@@ -17,7 +17,7 @@ In this benchmark, we aim to test the performance of the different container run
 |||| install_lxc_lxd.sh
 |||| install_k3s_default.sh (CRI-O runtime)
 |||| install_k3s_containerd.sh
-|| /set-up
+|| /configure
 ||| sysbench_install.sh
 ||| /multi_mahine
 |||| set_up_docker.sh
