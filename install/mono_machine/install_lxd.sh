@@ -4,12 +4,12 @@ set -e
 
 # Update the system
 echo "Updating the system..."
-sudo apt update -qq
+sudo apt update -qq -y
 sudo apt upgrade -y -qq
 
 # Install LXD
 echo "Installing LXD..."
-sudo apt install lxd -y -qq
+sudo apt install lxc -y -qq
 
 # Verify LXD installation
 echo "Verifying LXD installation..."

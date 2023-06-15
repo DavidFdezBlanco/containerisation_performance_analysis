@@ -1,0 +1,52 @@
+Host khamul
+     Hostname khamul.citi.insa-lyon.fr
+     User amirekik
+     ForwardAgent yes
+     StrictHostKeyChecking no
+     UserKnownHostsFile=/dev/null
+     RequestTTY force
+     ServerAliveInterval 30
+     ServerAliveCountMax 6
+     IdentityFile /home/th3gary/.ssh/config_key
+
+Host device110
+     Hostname 10.0.1.110
+     User amirekik
+     ProxyCommand ssh -W %h:%p khamul
+     IdentityFile /home/th3gary/.ssh/config_key
+	 
+Host device111
+     Hostname 10.0.1.111
+     User amirekik
+     ProxyCommand ssh -i "~/.ssh/config_key" -W %h:%p khamul
+     IdentityFile /home/th3gary/.ssh/config_key
+
+Host device112
+     Hostname 10.0.1.112
+     User amirekik
+     ProxyCommand ssh -i "~/.ssh/config_key" -W %h:%p khamul
+     IdentityFile /home/th3gary/.ssh/config_key
+
+Host device113
+     Hostname 10.0.1.113
+     User amirekik
+     ProxyCommand ssh -i "~/.ssh/config_key" -W %h:%p khamul
+     IdentityFile /home/th3gary/.ssh/config_key
+
+Host device114
+     Hostname 10.0.1.114
+     User amirekik
+     ProxyCommand ssh -i "~/.ssh/config_key" -W %h:%p khamul
+     IdentityFile /home/th3gary/.ssh/config_key
+
+Host device2Bpi151
+     Hostname 10.0.1.151
+     User amirekik
+     ProxyCommand ssh -i "~/.ssh/config_key" -W %h:%p khamul
+     IdentityFile /home/th3gary/.ssh/config_key
+
+Host device4pi172
+     Hostname 10.0.1.172
+     User amirekik
+     ProxyCommand ssh -i "~/.ssh/config_key" -W %h:%p khamul
+     IdentityFile /home/th3gary/.ssh/config_key

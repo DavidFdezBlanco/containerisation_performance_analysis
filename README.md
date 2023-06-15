@@ -94,3 +94,7 @@ test_choice.sh doit:
   - treat results, store sur csv à test_results
 
 # Multi-machine benchamarks (on verra quand on sera la)
+
+
+# Possible errors
+In youpi there is an error with the sudoers, please follow this tutorial https://www.globo.tech/learning-center/sudo-unable-to-resolve-host-explained/ to resolve host not found when sudoing in ubuntu.

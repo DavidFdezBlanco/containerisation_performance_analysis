@@ -62,8 +62,6 @@ for NODE_HOSTNAME in "${NODE_HOSTNAMES[@]}"; do
   # Copy the installation script to the target machine
   scp $flags "$(dirname "$0")/mono_machine/install_${CONTAINER_ENGINE}.sh" $NODE_HOSTNAME:/tmp/install_${CONTAINER_ENGINE}.sh
 
-  # echo "here2"
-
   # SSH into the node and run the installation script
   ssh $flags $NODE_HOSTNAME "chmod +x /tmp/install_${CONTAINER_ENGINE}.sh && /tmp/install_${CONTAINER_ENGINE}.sh"
 
@@ -72,5 +70,3 @@ for NODE_HOSTNAME in "${NODE_HOSTNAMES[@]}"; do
 
   echo "Install on $NODE_HOSTNAME ended."
 done
-
-# attention do https://www.globo.tech/learning-center/sudo-unable-to-resolve-host-explained/ to resolve host not found when sudoing in ubuntu.
