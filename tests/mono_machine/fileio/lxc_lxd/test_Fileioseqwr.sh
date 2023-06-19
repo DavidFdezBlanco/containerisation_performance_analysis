@@ -1,7 +1,14 @@
 #!/bin/bash
 
+if [ $# -lt 1 ]; then
+  echo "Usage: $0 <repetitions>"
+  exit 1
+fi
+
+./image_fileio.sh 
+
 # Créer 30 nouveaux conteneurs basés sur l'image "TestSys", exécuter le test Sysbench CPU run pour chaque conteneur,>
-for i in $(seq 1 20); do
+for i in $(seq 1 $repetitions); do
     # Créer un nouveau conteneur basé sur l'image "TestSys"
     lxc launch TestSys test-container$i
 
