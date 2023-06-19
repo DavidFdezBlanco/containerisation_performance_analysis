@@ -1,5 +1,6 @@
 DOCKER_NODES="device110"
 K3S_CONTAINERD_NODES="device111"
 K3S_CRIO_NODES="device112"
-LXC_NODES="device_113"
-LXD_NODES="device_114"
+LXC_NODES="device113"
+LXD_NODES="device114"
+NODE_NODES="device114"
