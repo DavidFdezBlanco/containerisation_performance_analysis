@@ -4,13 +4,13 @@
 lxc launch images:ubuntu/22.04 temporary-container
 
 # Installer Sysbench dans le conteneur temporaire
-lxc exec temporary-container -- apt-get update
-lxc exec temporary-container -- apt-get install -y sysbench
+lxc exec temporary-container -- apt update
+lxc exec temporary-container -- apt install -y sysbench
 lxc exec temporary-container -- sysbench fileio prepare
 
 # Créer une image LXD basée sur le conteneur temporaire
 lxc stop temporary-container
-lxc publish temporary-container --alias testSys
+lxc publish temporary-container --alias TestSys
 
 # Supprimer le conteneur temporaire
 lxc delete temporary-container

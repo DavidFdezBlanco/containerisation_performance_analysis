@@ -28,7 +28,7 @@ if [ $# -lt 4 ]; then
 fi
 
 # Verify the container engine argument
-VALID_ENGINES=("docker" "k3s_containerd" "k3s_crio" "lxc" "lxd")
+VALID_ENGINES=("docker" "k3s_containerd" "k3s_crio" "lxc" "lxc_lxd" "node")
 CONTAINER_ENGINE=$2
 
 if [[ ! " ${VALID_ENGINES[@]} " =~ " ${CONTAINER_ENGINE} " ]]; then
@@ -100,11 +100,11 @@ if [ "$CLEAN_MACHINE" == "-c" ]; then
         ;;
       lxc)
         # Clean LXC containers
-        ssh $flags $NODE_HOSTNAME "lxc list | awk '{if(NR>2)print \$2}' | xargs -I% lxc delete %"
+        ssh $flags $NODE_HOSTNAME "sudo lxc list | awk '{if(NR>2) print $2}' | xargs -I% lxc delete %; lxc image list | awk '{if(NR>2) print $2}' | xargs -I% lxc image delete %"
         ;;
-      lxd)
-        # Clean LXD containers
-        ssh $flags $NODE_HOSTNAME "lxc list | awk '{if(NR>2)print \$2}' | xargs -I% lxc delete %"
+      lxc_lxd)
+        # Clean LXD containersexit
+        ssh $flags $NODE_HOSTNAME "sudo apt-get remove --purge lxd lxd-client"
         ;;
       k3s_containerd)
         # Clean K3s containers and resources
@@ -130,10 +130,10 @@ for NODE_HOSTNAME in "${NODE_HOSTNAMES[@]}"; do
   echo "Running test on node: $NODE_HOSTNAME"
 
   # Copy the technology folder to the target machine
-  scp $flags -r "/mnt/c/Users/amirr/STELLANTIS_these/containerisation_performance_analysis/tests/mono_machine/$TEST/$CONTAINER_ENGINE" $NODE_HOSTNAME:/tmp/test
+  scp $flags -r "/mnt/c/Users/amirr/STELLANTIS_these/containerisation_performance_analysis/tests/mono_machine/$TEST/$CONTAINER_ENGINE" $NODE_HOSTNAME:/tmp/test/$CONTAINER_ENGINE
 
   # Run the test script
-  ssh $flags $NODE_HOSTNAME "cd /tmp/test/$CONTAINER_ENGINE; bash test.sh $REPETITIONS"
+  ssh $flags $NODE_HOSTNAME "cd /tmp/test/$CONTAINER_ENGINE; sudo bash test.sh $REPETITIONS"
 
   # Run the collect_and_treat_result script
   # ssh $flags $NODE_HOSTNAME "cd /tmp/$CONTAINER_ENGINE; bash collect_and_treat_result.sh"
