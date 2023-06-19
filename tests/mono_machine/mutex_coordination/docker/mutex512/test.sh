@@ -1,11 +1,17 @@
 #!/bin/bash
 
+if [ $# -lt 1 ]; then
+  echo "Usage: $0 <repetitions>"
+  exit 1
+fi
+
+repetitions=$1
+
 # Build the Docker image from the Dockerfile
 docker build -t mutex-test512 .
 
 # Create 40 containers
-for i in {1..40}
-do
+for i in $(seq 1 $repetitions); do
   # Create a new container
   container_id=$(docker run -d --name "conteneur$i" mutex-test512)
 

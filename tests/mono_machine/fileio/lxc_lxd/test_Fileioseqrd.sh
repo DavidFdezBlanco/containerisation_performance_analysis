@@ -5,6 +5,8 @@ if [ $# -lt 1 ]; then
   exit 1
 fi
 
+repetitions=$1
+
 ./image_fileio.sh 
 # Créer 30 nouveaux conteneurs basés sur l'image "TestSysFile", exécuter le test Sysbench CPU run pour chaque conteneur,>
 for i in $(seq 1 $repetitions); do

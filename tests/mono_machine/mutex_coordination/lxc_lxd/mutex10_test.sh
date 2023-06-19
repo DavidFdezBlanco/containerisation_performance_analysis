@@ -5,6 +5,8 @@ if [ $# -lt 1 ]; then
   exit 1
 fi
 
+repetitions=$1
+
 ./image_mutex.sh 
 
 # Créer 20 nouveaux conteneurs basés sur l'image "TestSys", exécuter le test Sysbench CPU run pour chaque conteneur, stocker la sortie dans un fichier texte en dehors du conteneur, puis supprimer chaque conteneur

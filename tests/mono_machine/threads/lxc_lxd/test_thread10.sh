@@ -5,6 +5,9 @@ if [ $# -lt 1 ]; then
   exit 1
 fi
 
+repetitions=$1
+
+
 ./image_threads.sh 
 
 
