@@ -4,10 +4,6 @@ set -e
 
 source ../.env
 
-PATH_CONFIG_MAIN="/mnt/c/Users/amirr/.ssh/config"
-echo "length is ${#PATH_CONFIG_MAIN}"
-echo "length is ${#PATH_TO_SSH_CONFIG}"
-
 flags=""
 if [[ $USE_ENV == true ]]; then
   echo "Using .env"
@@ -23,7 +19,7 @@ source ../.topography
 if [ $# -lt 4 ]; then
   echo "Please update the topography file if you haven't done it yet to contain the authorized IPs."
   echo "Usage: ./test_choice.sh <node_ips> <container_engine> <test> <repetitions> [-c]"
-  echo "Example: ./test_choice.sh device110,device111 docker cpu_overhead 5 -c (for this to work, both device110 and 111 need to be declared within the topography DOCKER_NODES)"
+  echo "Example: ./test_choice.sh device110,device111 docker cpu_overhead 5 clean (for this to work, both device110 and 111 need to be declared within the topography DOCKER_NODES)"
   exit 1
 fi
 
@@ -64,7 +60,7 @@ validate_host_permissions() {
   valid=false
 
   for VALID_HOSTNAME in "${VALID_HOSTNAMES[@]}"; do
-    VALID_HOSTNAME=$(echo $VALID_HOSTNAME | sed 's/.$//')
+    # VALID_HOSTNAME=$(echo $VALID_HOSTNAME | sed 's/.$//') put it if your line sequence is CRLF instead of LF
     if [[ "$hostname" == "$VALID_HOSTNAME" ]]; then
       valid=true
       break
@@ -85,7 +81,7 @@ done
 CLEAN_MACHINE=$5
 
 # Clean the machine if specified
-if [ "$CLEAN_MACHINE" == "-c" ]; then
+if [ "$CLEAN_MACHINE" == "clean" ]; then
   echo "Cleaning the machine"
   
   for NODE_HOSTNAME in "${NODE_HOSTNAMES[@]}"; do
@@ -93,33 +89,15 @@ if [ "$CLEAN_MACHINE" == "-c" ]; then
 
     echo "Cleaning node: $NODE_HOSTNAME"
 
-    case $CONTAINER_ENGINE in
-      docker)
-        # Clean Docker containers, volumes, and networks
-        ssh $flags $NODE_HOSTNAME "docker system prune --all --volumes --force"
-        ;;
-      lxc)
-        # Clean LXC containers
-        ssh $flags $NODE_HOSTNAME "sudo lxc list | awk '{if(NR>2) print $2}' | xargs -I% lxc delete %; lxc image list | awk '{if(NR>2) print $2}' | xargs -I% lxc image delete %"
-        ;;
-      lxc_lxd)
-        # Clean LXD containersexit
-        ssh $flags $NODE_HOSTNAME "sudo apt-get remove --purge lxd lxd-client"
-        ;;
-      k3s_containerd)
-        # Clean K3s containers and resources
-        ssh $flags $NODE_HOSTNAME "k3s crictl rmp --all"
-        ;;
-      k3s_crio)
-        # Clean K3s containers and resources
-        ssh $flags $NODE_HOSTNAME "k3s crictl rmp --all"
-        ;;
-      *)
-        echo "Cleaning is not supported for the chosen container engine."
-        ;;
-    esac
-    # Remove all files in /tmp/test
-    ssh $flags $NODE_HOSTNAME "rm -rf /tmp/test/*"
+    ssh $flags $NODE_HOSTNAME "mkdir -p /tmp/perf_study/"
+    # Copy the installation script to the target machine
+    scp $flags "$(dirname "$0")/../full_cleanup/clean_${CONTAINER_ENGINE}.sh" $NODE_HOSTNAME:/tmp/perf_study/clean_${CONTAINER_ENGINE}.sh
+
+    # SSH into the node and run the installation script
+    ssh $flags $NODE_HOSTNAME "chmod +x /tmp/perf_study/clean_${CONTAINER_ENGINE}.sh && /tmp/perf_study/clean_${CONTAINER_ENGINE}.sh"
+
+    echo "Removing temp file..."
+    ssh $flags $NODE_HOSTNAME "rm -rf /tmp/perf_study/*"
   done
 fi
 
@@ -129,12 +107,21 @@ for NODE_HOSTNAME in "${NODE_HOSTNAMES[@]}"; do
 
   echo "Running test on node: $NODE_HOSTNAME"
 
+  ssh $flags $NODE_HOSTNAME "mkdir -p /tmp/perf_study/test/"
+  
   # Copy the technology folder to the target machine
-  scp $flags -r "/mnt/c/Users/amirr/STELLANTIS_these/containerisation_performance_analysis/tests/mono_machine/$TEST/$CONTAINER_ENGINE" $NODE_HOSTNAME:/tmp/test/$CONTAINER_ENGINE
+  scp $flags -r "$(dirname "$0")/mono_machine/$TEST/$CONTAINER_ENGINE" $NODE_HOSTNAME:/tmp/perf_study/test/
 
-  # Run the test script
-  ssh $flags $NODE_HOSTNAME "cd /tmp/test/$CONTAINER_ENGINE; sudo bash test.sh $REPETITIONS"
+  ssh $flags $NODE_HOSTNAME "mkdir -p /tmp/perf_study/test/$CONTAINER_ENGINE/results/"
 
+  # SSH into the node and run the installation script
+  ssh $flags $NODE_HOSTNAME "chmod +x /tmp/perf_study/test/$CONTAINER_ENGINE/test.sh && cd /tmp/perf_study/test/$CONTAINER_ENGINE/; ./test.sh $REPETITIONS"
+  
   # Run the collect_and_treat_result script
-  # ssh $flags $NODE_HOSTNAME "cd /tmp/$CONTAINER_ENGINE; bash collect_and_treat_result.sh"
+  OUTPUT_FILE_NAME_LOCAL="$(dirname "$0")/tmp/results/${CONTAINER_ENGINE}_${TEST}_result.csv"
+  OUTPUT_FILE_NAME_MACHINE="/tmp/perf_study/test/docker/results/${CONTAINER_ENGINE}_${TEST}_result.csv"
+  ssh $flags $NODE_HOSTNAME "bash /tmp/perf_study/test/$CONTAINER_ENGINE/collect_and_treat_results.sh $REPETITIONS $OUTPUT_FILE_NAME_MACHINE"
+
+  mkdir -p $(dirname "$0")/tmp/results/
+  scp $flags -r $NODE_HOSTNAME:$OUTPUT_FILE_NAME_MACHINE $OUTPUT_FILE_NAME_LOCAL
 done

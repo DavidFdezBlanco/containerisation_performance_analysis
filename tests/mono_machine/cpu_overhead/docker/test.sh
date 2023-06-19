@@ -17,8 +17,7 @@ for i in $(seq 1 $repetitions); do
 
     docker wait sysbench-cpu-$i
 
-    docker logs sysbench-cpu-$i >> resultat_cpu$i.txt
+    docker logs sysbench-cpu-$i >> /tmp/perf_study/test/docker/results/untreated_docker_cpu_overhead_$i.txt
 
     docker rm sysbench-cpu-$i
 done
-

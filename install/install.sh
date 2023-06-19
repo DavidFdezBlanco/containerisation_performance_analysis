@@ -41,7 +41,7 @@ validate_host_permissions() {
   valid=false
 
   for VALID_HOSTNAME in "${VALID_HOSTNAMES[@]}"; do
-    VALID_HOSTNAME=$(echo $VALID_HOSTNAME | sed 's/.$//')
+    # VALID_HOSTNAME=$(echo $VALID_HOSTNAME | sed 's/.$//') put it if your line sequence is CRLF instead of LF
     if [[ "$hostname" == "$VALID_HOSTNAME" ]]; then
       valid=true
       break
@@ -60,13 +60,13 @@ for NODE_HOSTNAME in "${NODE_HOSTNAMES[@]}"; do
   echo "Installing $CONTAINER_ENGINE on node: $NODE_HOSTNAME"
 
   # Copy the installation script to the target machine
-  scp $flags "$(dirname "$0")/mono_machine/install_${CONTAINER_ENGINE}.sh" $NODE_HOSTNAME:/tmp/install_${CONTAINER_ENGINE}.sh
+  scp $flags "$(dirname "$0")/mono_machine/install_${CONTAINER_ENGINE}.sh" $NODE_HOSTNAME:/tmp/perf_study/install_${CONTAINER_ENGINE}.sh
 
   # SSH into the node and run the installation script
-  ssh $flags $NODE_HOSTNAME "chmod +x /tmp/install_${CONTAINER_ENGINE}.sh && /tmp/install_${CONTAINER_ENGINE}.sh"
+  ssh $flags $NODE_HOSTNAME "chmod +x /tmp/perf_study/install_${CONTAINER_ENGINE}.sh && /tmp/perf_study/install_${CONTAINER_ENGINE}.sh"
 
   # Remove the copied installation script from the target machine
-  ssh $flags $NODE_HOSTNAME "rm /tmp/install_${CONTAINER_ENGINE}.sh"
+  ssh $flags $NODE_HOSTNAME "rm /tmp/perf_study/install_${CONTAINER_ENGINE}.sh"
 
   echo "Install on $NODE_HOSTNAME ended."
 done
