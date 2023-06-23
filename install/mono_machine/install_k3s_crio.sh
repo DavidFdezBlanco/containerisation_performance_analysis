@@ -7,7 +7,7 @@ echo "Updating the system libraries"
 sudo apt update -qq -y
 
 # Install K3s with Docker as the container runtime
-echo "Installing K3s and setting Docker as the container runtime"
+echo "Installing K3s default install (CRIO runtime)"
 curl -sfL https://get.k3s.io | sh -s - server --token K1BBBBBBBBBaa549016::server:f98BBBBBBBBBBBBBa86bbea260
 
 # Check the status of K3s

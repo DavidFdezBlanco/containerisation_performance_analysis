@@ -22,7 +22,7 @@ if [ $# -lt 2 ]; then
 fi
 
 # Verify the container engine argument
-VALID_ENGINES=("docker" "k3s_containerd" "k3s_crio" "lxc" "lxd")
+VALID_ENGINES=("docker" "k3s_containerd" "k3s_crio" "lxd")
 CONTAINER_ENGINE=$2
 
 if [[ ! " ${VALID_ENGINES[@]} " =~ " ${CONTAINER_ENGINE} " ]]; then

@@ -24,7 +24,7 @@ if [ $# -lt 4 ]; then
 fi
 
 # Verify the container engine argument
-VALID_ENGINES=("docker" "k3s_containerd" "k3s_crio" "lxc" "lxc_lxd" "node")
+VALID_ENGINES=("docker" "k3s_containerd" "k3s_crio" "lxd" "none")
 CONTAINER_ENGINE=$2
 
 if [[ ! " ${VALID_ENGINES[@]} " =~ " ${CONTAINER_ENGINE} " ]]; then
@@ -118,9 +118,10 @@ for NODE_HOSTNAME in "${NODE_HOSTNAMES[@]}"; do
   ssh $flags $NODE_HOSTNAME "chmod +x /tmp/perf_study/test/$CONTAINER_ENGINE/test.sh && cd /tmp/perf_study/test/$CONTAINER_ENGINE/; ./test.sh $REPETITIONS"
   
   # Run the collect_and_treat_result script
+  scp $flags -r "$(dirname "$0")/mono_machine/$TEST/collect_and_treat_results.sh" $NODE_HOSTNAME:/tmp/perf_study/test/$CONTAINER_ENGINE/collect_and_treat_results.sh
   OUTPUT_FILE_NAME_LOCAL="$(dirname "$0")/tmp/results/${CONTAINER_ENGINE}_${TEST}_result.csv"
-  OUTPUT_FILE_NAME_MACHINE="/tmp/perf_study/test/docker/results/${CONTAINER_ENGINE}_${TEST}_result.csv"
-  ssh $flags $NODE_HOSTNAME "bash /tmp/perf_study/test/$CONTAINER_ENGINE/collect_and_treat_results.sh $REPETITIONS $OUTPUT_FILE_NAME_MACHINE"
+  OUTPUT_FILE_NAME_MACHINE="/tmp/perf_study/test/${CONTAINER_ENGINE}/results/${CONTAINER_ENGINE}_${TEST}_result.csv"
+  ssh $flags $NODE_HOSTNAME "bash /tmp/perf_study/test/${CONTAINER_ENGINE}/collect_and_treat_results.sh $REPETITIONS $OUTPUT_FILE_NAME_MACHINE $CONTAINER_ENGINE"
 
   mkdir -p $(dirname "$0")/tmp/results/
   scp $flags -r $NODE_HOSTNAME:$OUTPUT_FILE_NAME_MACHINE $OUTPUT_FILE_NAME_LOCAL
