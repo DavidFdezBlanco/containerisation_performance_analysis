@@ -8,7 +8,12 @@ sudo apt update -qq -y
 
 # Install K3s with Docker as the container runtime
 echo "Installing K3s default install (CRIO runtime)"
-curl -sfL https://get.k3s.io | sh -s - server --token K1BBBBBBBBBaa549016::server:f98BBBBBBBBBBBBBa86bbea260
+curl -sfL https://get.k3s.io | sh -
+
+echo "install additional package"
+sudo apt install linux-modules-extra-raspi && reboot
 
 # Check the status of K3s
 sudo systemctl status k3s.service
+
+
