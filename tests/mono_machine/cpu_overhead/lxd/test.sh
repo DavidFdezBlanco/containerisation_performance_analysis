@@ -9,7 +9,7 @@ repetitions=$1
 
 # Creating LXD Image
 echo "Creating LXD Image..."
-./image_cpu.sh
+/tmp/perf_study/test/lxd/image_cpu.sh
 
 # Create new containers based on the "cpu_overhead_lxd" image, run Sysbench CPU test for each container, 
 # store the output in a text file outside the container, and then delete each container.

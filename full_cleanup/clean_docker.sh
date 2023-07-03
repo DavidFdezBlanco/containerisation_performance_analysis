@@ -2,36 +2,36 @@
 
 set -e
 
-if [ $(docker ps -aq) ]; then
+if [ $(sudo docker ps -aq) ]; then
     # Stop all running containers
     echo "Stopping all running containers..."
-    docker stop $(docker ps -aq)
+    sudo docker stop $(sudo docker ps -aq)
 
     # Remove all containers
     echo "Removing all containers..."
-    docker rm $(docker ps -aq)
+    sudo docker rm $(sudo docker ps -aq)
 fi
 
-if [ $(docker images -aq) ]; then
+if [ $(sudo docker images -aq) ]; then
     # Remove all images
     echo "Removing all images..."
-    docker rmi $(docker images -aq)
+    sudo docker rmi $(sudo docker images -aq)
 fi
 
-if [ $(docker volume ls -q) ]; then
+if [ $(sudo docker volume ls -q) ]; then
     # Remove all volumes
     echo "Removing all volumes..."
-    docker volume rm $(docker volume ls -q)
+    sudo docker volume rm $(sudo docker volume ls -q)
 fi
 
-if [ $(docker volume ls -q) ]; then
+if [ $(sudo docker volume ls -q) ]; then
     # Remove all networks
     echo "Removing all networks..."
-    docker network rm $(docker network ls -q)
+    sudo docker network rm $(sudo docker network ls -q)
 fi
 
-# Remove unused Docker data
-echo "Removing unused Docker data..."
-docker system prune --all --volumes -f 
+# Remove unused sudo docker data
+echo "Removing unused sudo docker data..."
+sudo docker system prune --all --volumes -f 
 
-echo "Docker data cleaning completed successfully!"
+echo "sudo docker data cleaning completed successfully!"

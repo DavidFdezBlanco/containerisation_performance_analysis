@@ -33,7 +33,7 @@ if [[ ! " ${VALID_ENGINES[@]} " =~ " ${CONTAINER_ENGINE} " ]]; then
 fi
 
 # Verify the test argument
-VALID_TESTS=("cpu_overhead" "memory_overhead" "threads" "fileio" "mutex_coordination" "start_time" "build_time" "fibonacci")
+VALID_TESTS=("cpu_overhead" "memory_overhead" "threads" "fileio" "mutex" "start_time" "build_time" "fibonacci")
 TEST=$3
 
 if [[ ! " ${VALID_TESTS[@]} " =~ " ${TEST} " ]]; then
@@ -94,7 +94,7 @@ if [ "$CLEAN_MACHINE" == "clean" ]; then
     scp $flags "$(dirname "$0")/../full_cleanup/clean_${CONTAINER_ENGINE}.sh" $NODE_HOSTNAME:/tmp/perf_study/clean_${CONTAINER_ENGINE}.sh
 
     # SSH into the node and run the installation script
-    ssh $flags $NODE_HOSTNAME "chmod +x /tmp/perf_study/clean_${CONTAINER_ENGINE}.sh && /tmp/perf_study/clean_${CONTAINER_ENGINE}.sh"
+    ssh $flags $NODE_HOSTNAME "chmod +x /tmp/perf_study/clean_${CONTAINER_ENGINE}.sh && sudo /tmp/perf_study/clean_${CONTAINER_ENGINE}.sh"
 
     echo "Removing temp file..."
     ssh $flags $NODE_HOSTNAME "rm -rf /tmp/perf_study/*"
@@ -107,7 +107,7 @@ for NODE_HOSTNAME in "${NODE_HOSTNAMES[@]}"; do
 
   echo "Running test on node: $NODE_HOSTNAME"
 
-  ssh $flags $NODE_HOSTNAME "mkdir -p /tmp/perf_study/test/"
+  ssh $flags $NODE_HOSTNAME "mkdir -p /tmp/perf_study/test/$CONTAINER_ENGINE"
   
   # Copy the technology folder to the target machine
   scp $flags -r "$(dirname "$0")/mono_machine/$TEST/$CONTAINER_ENGINE" $NODE_HOSTNAME:/tmp/perf_study/test/
@@ -115,10 +115,20 @@ for NODE_HOSTNAME in "${NODE_HOSTNAMES[@]}"; do
   ssh $flags $NODE_HOSTNAME "mkdir -p /tmp/perf_study/test/$CONTAINER_ENGINE/results/"
 
   # SSH into the node and run the installation script
-  ssh $flags $NODE_HOSTNAME "chmod +x /tmp/perf_study/test/$CONTAINER_ENGINE/test.sh && cd /tmp/perf_study/test/$CONTAINER_ENGINE/; ./test.sh $REPETITIONS"
+  ssh $flags $NODE_HOSTNAME "chmod +x /tmp/perf_study/test/$CONTAINER_ENGINE/test.sh && cd /tmp/perf_study/test/$CONTAINER_ENGINE/; sudo ./test.sh $REPETITIONS"
   
   # Run the collect_and_treat_result script
   scp $flags -r "$(dirname "$0")/mono_machine/$TEST/collect_and_treat_results.sh" $NODE_HOSTNAME:/tmp/perf_study/test/$CONTAINER_ENGINE/collect_and_treat_results.sh
+  if [[ $TEST == "fileio" ]]; then
+    scp $flags -r "$(dirname "$0")/mono_machine/$TEST/collect_and_treat_results_each.sh" $NODE_HOSTNAME:/tmp/perf_study/test/$CONTAINER_ENGINE/collect_and_treat_results_each.sh
+  fi
+  if [[ $TEST == "threads" ]]; then
+    scp $flags -r "$(dirname "$0")/mono_machine/$TEST/collect_and_treat_results_each.sh" $NODE_HOSTNAME:/tmp/perf_study/test/$CONTAINER_ENGINE/collect_and_treat_results_each.sh
+  fi
+  if [[ $TEST == "mutex" ]]; then
+    scp $flags -r "$(dirname "$0")/mono_machine/$TEST/collect_and_treat_results_each.sh" $NODE_HOSTNAME:/tmp/perf_study/test/$CONTAINER_ENGINE/collect_and_treat_results_each.sh
+  fi
+
   OUTPUT_FILE_NAME_LOCAL="$(dirname "$0")/tmp/results/${CONTAINER_ENGINE}_${TEST}_result.csv"
   OUTPUT_FILE_NAME_MACHINE="/tmp/perf_study/test/${CONTAINER_ENGINE}/results/${CONTAINER_ENGINE}_${TEST}_result.csv"
   ssh $flags $NODE_HOSTNAME "bash /tmp/perf_study/test/${CONTAINER_ENGINE}/collect_and_treat_results.sh $REPETITIONS $OUTPUT_FILE_NAME_MACHINE $CONTAINER_ENGINE"

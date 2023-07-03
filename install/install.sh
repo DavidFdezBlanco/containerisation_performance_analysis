@@ -59,6 +59,8 @@ for NODE_HOSTNAME in "${NODE_HOSTNAMES[@]}"; do
 
   echo "Installing $CONTAINER_ENGINE on node: $NODE_HOSTNAME"
 
+  ssh $flags $NODE_HOSTNAME "mkdir -p /tmp/perf_study/"
+
   # Copy the installation script to the target machine
   scp $flags "$(dirname "$0")/mono_machine/install_${CONTAINER_ENGINE}.sh" $NODE_HOSTNAME:/tmp/perf_study/install_${CONTAINER_ENGINE}.sh
 

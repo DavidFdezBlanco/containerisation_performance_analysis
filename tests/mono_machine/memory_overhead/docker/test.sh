@@ -7,18 +7,17 @@ fi
 
 repetitions=$1
 
-# Build the Docker image from the Dockerfile
-docker build -t memory-test .
+sudo docker build -t sysbench-memory .
 
-# Create 40 containers
+# Create specified number of containers from the sysbench-memory image
 for i in $(seq 1 $repetitions); do
-  # Create a new container
-  container_id=$(docker run -d memory-test)
+    sudo docker run -d --name=sysbench-memory-$i sysbench-memory
 
-  # Get the logs from the container and save them to a file
-  docker logs $container_id > "memory$i.txt"
+    echo "Running test $i"
 
-  # Delete the container
-  docker rm -f $container_id
+    sudo docker wait sysbench-memory-$i
+
+    sudo docker logs sysbench-memory-$i >> /tmp/perf_study/test/docker/results/untreated_docker_memory_overhead_$i.txt
+
+    sudo docker rm sysbench-memory-$i
 done
-
