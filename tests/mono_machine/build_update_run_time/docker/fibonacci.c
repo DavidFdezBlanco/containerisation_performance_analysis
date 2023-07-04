@@ -10,7 +10,7 @@ int fibonacci(int n) {
 int main() {
     int n = 10;
 
-    printf("Fibonnaci for n first terms:\n", n);
+    printf("Fibonnaci for 10 first terms:\n");
     for (int i = 0; i < n; i++) {
         int term = fibonacci(i);
         printf("%d ", term);

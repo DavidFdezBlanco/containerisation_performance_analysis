@@ -33,7 +33,7 @@ if [[ ! " ${VALID_ENGINES[@]} " =~ " ${CONTAINER_ENGINE} " ]]; then
 fi
 
 # Verify the test argument
-VALID_TESTS=("cpu_overhead" "memory_overhead" "threads" "fileio" "mutex" "start_time" "build_time" "fibonacci")
+VALID_TESTS=("cpu_overhead" "memory_overhead" "threads" "fileio" "mutex" "build_update_run_time")
 TEST=$3
 
 if [[ ! " ${VALID_TESTS[@]} " =~ " ${TEST} " ]]; then
@@ -119,13 +119,7 @@ for NODE_HOSTNAME in "${NODE_HOSTNAMES[@]}"; do
   
   # Run the collect_and_treat_result script
   scp $flags -r "$(dirname "$0")/mono_machine/$TEST/collect_and_treat_results.sh" $NODE_HOSTNAME:/tmp/perf_study/test/$CONTAINER_ENGINE/collect_and_treat_results.sh
-  if [[ $TEST == "fileio" ]]; then
-    scp $flags -r "$(dirname "$0")/mono_machine/$TEST/collect_and_treat_results_each.sh" $NODE_HOSTNAME:/tmp/perf_study/test/$CONTAINER_ENGINE/collect_and_treat_results_each.sh
-  fi
-  if [[ $TEST == "threads" ]]; then
-    scp $flags -r "$(dirname "$0")/mono_machine/$TEST/collect_and_treat_results_each.sh" $NODE_HOSTNAME:/tmp/perf_study/test/$CONTAINER_ENGINE/collect_and_treat_results_each.sh
-  fi
-  if [[ $TEST == "mutex" ]]; then
+  if [[ $TEST == "fileio" || $TEST == "threads" || $TEST == "mutex" ]]; then
     scp $flags -r "$(dirname "$0")/mono_machine/$TEST/collect_and_treat_results_each.sh" $NODE_HOSTNAME:/tmp/perf_study/test/$CONTAINER_ENGINE/collect_and_treat_results_each.sh
   fi
 
