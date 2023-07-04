@@ -32,7 +32,6 @@ do
     echo "Throughput read MiB/s: $read_throughput"
     echo "Throughput written MiB/s: $written_throughput"
 
-    # Ajouter les valeurs extraites à une nouvelle ligne dans le fichier Excel
     echo -e "$filetestmode,$i,$read_throughput,$written_throughput" >> "$output_file"
     rm "$filename"
 done

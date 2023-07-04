@@ -28,7 +28,6 @@ do
     echo "thread_fairness_events: $thread_fairness_events"
     echo "thread_fairness_exec_time: $thread_fairness_exec_time"
 
-    # Ajouter les valeurs extraites à une nouvelle ligne dans le fichier Excel
     echo -e "$number,$i,$total_time,$total_events,$thread_fairness_events,$thread_fairness_exec_time" >> "$output_file"
     rm "$filename"
 done

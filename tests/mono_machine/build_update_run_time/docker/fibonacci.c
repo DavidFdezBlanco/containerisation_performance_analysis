@@ -1,6 +1,5 @@
 #include <stdio.h>
 
-// Fonction pour calculer le terme de Fibonacci
 int fibonacci(int n) {
     if (n <= 1)
         return n;
@@ -9,9 +8,9 @@ int fibonacci(int n) {
 }
 
 int main() {
-    int n = 10; // Nombre de termes de Fibonacci à calculer
+    int n = 10;
 
-    printf("Suite de Fibonacci pour les %d premiers termes:\n", n);
+    printf("Fibonnaci for n first terms:\n", n);
     for (int i = 0; i < n; i++) {
         int term = fibonacci(i);
         printf("%d ", term);

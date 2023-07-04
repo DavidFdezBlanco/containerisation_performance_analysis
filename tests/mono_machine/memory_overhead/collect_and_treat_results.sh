@@ -29,7 +29,6 @@ do
     echo "Operations per second: $operations_per_second"
     echo "MiB/sec: $mib_per_sec"
 
-    # Ajouter les valeurs extraites à une nouvelle ligne dans le fichier Excel
     echo -e "$i,$total_time,$total_operations,$operations_per_second,$mib_per_sec" >> "$output_file"
     rm "$filename"
 done
