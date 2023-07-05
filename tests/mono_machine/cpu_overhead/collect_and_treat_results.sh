@@ -29,5 +29,3 @@ do
     echo -e "$i,$events_per_sec,$total_time,$percentile95" >> "$output_file"
     rm $file
 done
-
-
