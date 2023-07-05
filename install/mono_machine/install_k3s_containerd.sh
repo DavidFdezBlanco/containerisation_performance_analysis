@@ -6,20 +6,12 @@ set -e
 echo "Updating the system libraries"
 sudo apt update -qq -y
 
-# Install Docker
-echo "Installing Docker"
-curl -sSL https://get.docker.com | sh
+# Install docker on the Node
+curl https://releases.rancher.com/install-docker/20.10.sh | sh
 
-# Add current user to the docker group to allow running Docker without sudo
-echo "Adding current user to the docker group"
-sudo usermod -aG docker $USER
+# Install K3s with Docker as the container runtime
+echo "Installing K3s default install (CRIO runtime)"
+curl -sfL https://get.k3s.io | sh -s - --docker
 
-# Install kubectl
-curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-chmod +x ./kubectl
-sudo mv ./kubectl /usr/local/bin/kubectl
-
-# Install k3d
-curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
-
-sudo k3d cluster create mycluster
+# Check the status of K3s
+sudo systemctl status k3s.service
