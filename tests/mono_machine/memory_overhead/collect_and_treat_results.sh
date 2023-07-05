@@ -10,7 +10,6 @@ echo "Initializing result file..."
 echo -e "index,Total time,Total operations,Operations per second,MiB/sec" > "$output_file"
 
 
-echo -e "index,Events per Second,Total Time,95th Percentile" > "$output_file"
 for ((i = 1; i <= number_executions; i++))
 do
     filename="/tmp/perf_study/test/$engine/results/untreated_${engine}_memory_overhead_$i.txt"
