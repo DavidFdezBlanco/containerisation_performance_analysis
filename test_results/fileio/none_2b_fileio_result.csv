@@ -1,0 +1,24 @@
+test,index,Throughput read MiB/s,Throughput written MiB/s
+seqwr,1,0.00,9.82
+seqwr,2,0.00,10.55
+seqwr,3,0.00,10.73
+seqwr,4,0.00,10.67
+seqwr,5,0.00,10.49
+test,index,Throughput read MiB/s,Throughput written MiB/s
+seqrd,1,20.15,0.00
+seqrd,2,29.36,0.00
+seqrd,3,27.47,0.00
+seqrd,4,26.52,0.00
+seqrd,5,23.00,0.00
+test,index,Throughput read MiB/s,Throughput written MiB/s
+rndwr,1,0.00,3.24
+rndwr,2,0.00,3.20
+rndwr,3,0.00,3.73
+rndwr,4,0.00,3.44
+rndwr,5,0.00,3.79
+test,index,Throughput read MiB/s,Throughput written MiB/s
+rndrd,1,12.90,0.00
+rndrd,2,12.82,0.00
+rndrd,3,12.08,0.00
+rndrd,4,12.41,0.00
+rndrd,5,12.14,0.00

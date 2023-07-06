@@ -14,7 +14,7 @@ for i in $(seq 1 $repetitions); do
   echo "Building image $script"
   BEFORE=$(date +'%s.%N')
   sudo lxc launch images:ubuntu/22.04 test-$script-$i
-  sudo lxc file push $script test-$script-$i/
+  sudo lxc file push $script.c test-$script-$i/
   sudo lxc exec test-$script-$i -- /bin/bash -c "apt-get update && apt-get install -y gcc && gcc -o $script $script.c"
   sudo lxc publish test-$script-$i --alias image-test-$script-$i
   sudo lxc delete test-$script-$i --force
