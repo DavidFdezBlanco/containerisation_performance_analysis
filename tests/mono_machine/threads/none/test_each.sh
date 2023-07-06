@@ -1,8 +1,5 @@
 #!/bin/bash
 
-sudo apt-get update -y
-sudo apt-get install -y sysbench
-
 if [ $# -lt 1 ]; then
   echo "Usage: $0 <repetitions>"
   exit 1

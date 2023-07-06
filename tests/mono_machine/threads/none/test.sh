@@ -1,6 +1,9 @@
 #!/bin/bash
 repetitions=$1
 
+sudo apt-get update -y
+sudo apt-get install -y sysbench
+
 /tmp/perf_study/test/none/test_each.sh $repetitions 1
 /tmp/perf_study/test/none/test_each.sh $repetitions 8
 /tmp/perf_study/test/none/test_each.sh $repetitions 16
