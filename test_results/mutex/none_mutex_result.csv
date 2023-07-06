@@ -1,0 +1,54 @@
+test_number,index,Total time,Total events,Thread fairness total events,Thread fairness exec time
+1,1,1.1149,1,1.0000,1.1146
+1,2,1.1437,1,1.0000,1.1433
+1,3,1.2171,1,1.0000,1.2168
+1,4,1.2097,1,1.0000,1.2094
+1,5,1.1527,1,1.0000,1.1523
+test_number,index,Total time,Total events,Thread fairness total events,Thread fairness exec time
+8,1,2.5486,8,1.0000,2.4480
+8,2,2.5790,8,1.0000,2.5137
+8,3,2.6102,8,1.0000,2.4861
+8,4,2.5587,8,1.0000,2.5505
+8,5,2.5592,8,1.0000,2.5155
+test_number,index,Total time,Total events,Thread fairness total events,Thread fairness exec time
+16,1,5.1348,16,1.0000,5.0468
+16,2,5.1243,16,1.0000,5.0798
+16,3,5.1341,16,1.0000,5.0229
+16,4,5.1421,16,1.0000,5.0538
+16,5,5.1306,16,1.0000,5.0921
+test_number,index,Total time,Total events,Thread fairness total events,Thread fairness exec time
+32,1,10.2939,32,1.0000,10.0948
+32,2,10.3077,32,1.0000,10.1086
+32,3,10.2914,32,1.0000,10.1582
+32,4,10.2895,32,1.0000,10.1269
+32,5,10.2878,32,1.0000,10.1517
+test_number,index,Total time,Total events,Thread fairness total events,Thread fairness exec time
+64,1,20.6084,64,1.0000,20.2902
+64,2,21.9767,64,1.0000,21.1412
+64,3,20.6034,64,1.0000,20.3076
+64,4,20.9439,64,1.0000,20.4851
+64,5,20.6072,64,1.0000,20.2770
+test_number,index,Total time,Total events,Thread fairness total events,Thread fairness exec time
+128,1,41.2180,128,1.0000,40.7759
+128,2,41.2111,128,1.0000,40.6625
+128,3,41.2976,128,1.0000,40.9734
+128,4,41.2117,128,1.0000,40.7422
+128,5,41.2054,128,1.0000,40.7804
+test_number,index,Total time,Total events,Thread fairness total events,Thread fairness exec time
+256,1,82.4740,256,1.0000,81.6086
+256,2,82.4856,256,1.0000,81.6418
+256,3,82.4613,256,1.0000,81.6811
+256,4,82.4431,256,1.0000,81.5733
+256,5,82.4570,256,1.0000,81.6116
+test_number,index,Total time,Total events,Thread fairness total events,Thread fairness exec time
+512,1,164.9662,512,1.0000,164.2707
+512,2,164.9670,512,1.0000,163.2899
+512,3,164.9395,512,1.0000,164.1925
+512,4,164.9498,512,1.0000,163.4033
+512,5,164.9695,512,1.0000,163.3084
+test_number,index,Total time,Total events,Thread fairness total events,Thread fairness exec time
+1024,1,330.1809,1024,1.0000,328.5135
+1024,2,330.2094,1024,1.0000,328.7597
+1024,3,330.1623,1024,1.0000,328.8425
+1024,4,330.1596,1024,1.0000,328.8569
+1024,5,330.1425,1024,1.0000,328.7686

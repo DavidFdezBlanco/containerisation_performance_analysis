@@ -1,4 +1,4 @@
-index,Events per Second,Total Time,95th Percentile
+index,Total time,Total operations,Operations per second,MiB/sec
 1,10.0002,13029043,1301961.61,1271.45
 2,10.0003,12878721,1286987.83,1256.82
 3,10.0002,13027114,1301805.56,1271.29

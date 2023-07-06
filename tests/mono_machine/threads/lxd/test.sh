@@ -1,7 +1,7 @@
 #!/bin/bash
 repetitions=$1
 
-# /tmp/perf_study/test/lxd/image_threads.sh
+/tmp/perf_study/test/lxd/image_threads.sh
 
 /tmp/perf_study/test/lxd/test_each.sh $repetitions 1
 /tmp/perf_study/test/lxd/test_each.sh $repetitions 8

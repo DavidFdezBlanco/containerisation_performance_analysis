@@ -10,7 +10,8 @@ sudo apt update -qq -y
 echo "Installing K3s default install (CRIO runtime)"
 curl -sfL https://get.k3s.io | sh -
 
+echo "install additional package"
+sudo apt install linux-modules-extra-raspi && reboot
+
 # Check the status of K3s
 sudo systemctl status k3s.service
-
-
