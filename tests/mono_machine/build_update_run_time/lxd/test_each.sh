@@ -42,7 +42,7 @@ for i in $(seq 1 $repetitions); do
   ELAPSED_UPDATE_NO_CACHE=$(echo "scale=9; $AFTER - $BEFORE" | bc)
   echo "Temps de build : $ELAPSED_UPDATE_NO_CACHE secondes"
 
-  $ELAPSED_UPDATE_NO_CACHE="Not possible"
+  ELAPSED_UPDATE_CACHE="Not possible"
 
   echo -e "$i,$script,$ELAPSED_BUILD,$ELAPSED_UPDATE_NO_CACHE,$ELAPSED_UPDATE_CACHE,$ELAPSED_RUN" >> "$output_file"
 done

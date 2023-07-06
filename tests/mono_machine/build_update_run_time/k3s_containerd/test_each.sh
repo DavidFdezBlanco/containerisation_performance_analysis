@@ -19,13 +19,14 @@ for i in $(seq 1 $repetitions); do
   # Attente que le pod soit prêt
   kubectl wait --for=condition=Ready pod/test-$script-$i
 
-  kubectl exec -it test-$script-$i -- apt-get update > /dev/null
+  # Exécution du test Sysbench CPU et redirection de la sortie
+  kubectl exec -it test-$script-$i -- apt-get update 
 
-  kubectl exec -it test-$script-$i -- apt-get install -y gcc > /dev/null
+  kubectl exec -it test-$script-$i -- apt-get install -y gcc 
   # copie script vers container
-  kubectl cp $script test-$script-$i:/tmp
+  kubectl cp /tmp/perf_study/test/k3s_containerd/$script.c test-$script-$i:/tmp
   # compilation script c
-  kubectl exec -it test-$script-$i -- gcc -o $script $script.c > /dev/null
+  kubectl exec -it test-$script-$i -- gcc -o $script /tmp/$script.c 
   AFTER=$(date +'%s.%N')
   ELAPSED_BUILD=$(echo "scale=9; $AFTER - $BEFORE" | bc)
   echo "Temps de build : $ELAPSED_BUILD secondes"
@@ -33,10 +34,13 @@ for i in $(seq 1 $repetitions); do
 
   echo "Running image $script"
   BEFORE=$(date +'%s.%N')
+  #faire play container
   kubectl exec -it test-$script-$i  -- /$script
   AFTER=$(date +'%s.%N')
   ELAPSED_RUN=$(echo "scale=9; $AFTER - $BEFORE" | bc)
   echo "Temps run : $ELAPSED_RUN secondes"
+
+  kubectl delete pod test-$script-$i
 
   echo "Update image no cache $script"
   BEFORE=$(date +'%s.%N')
@@ -46,18 +50,19 @@ for i in $(seq 1 $repetitions); do
   # Attente que le pod soit prêt
   kubectl wait --for=condition=Ready pod/test-$script-$i
 
-  kubectl exec -it test-$script-$i -- apt-get update > /dev/null
+  # Exécution du test Sysbench CPU et redirection de la sortie
+  kubectl exec -it test-$script-$i -- apt-get update 
 
-  kubectl exec -it test-$script-$i -- apt-get install -y gcc > /dev/null
+  kubectl exec -it test-$script-$i -- apt-get install -y gcc 
   # copie script vers container
-  kubectl cp $script test-$script-$i:/tmp
+  kubectl cp /tmp/perf_study/test/k3s_containerd/$script.c test-$script-$i:/tmp
   # compilation script c
-  kubectl exec -it test-$script-$i -- gcc -o $script $script.c > /dev/null
+  kubectl exec -it test-$script-$i -- gcc -o $script /tmp/$script.c
   AFTER=$(date +'%s.%N')
   ELAPSED_UPDATE_NO_CACHE=$(echo "scale=9; $AFTER - $BEFORE" | bc)
   echo "Temps de build : $ELAPSED_UPDATE_NO_CACHE secondes"
-
-  $ELAPSED_UPDATE_NO_CACHE="Not possible"
+  kubectl delete pod test-$script-$i
+  ELAPSED_UPDATE_CACHE="Not possible"
 
   echo -e "$i,$script,$ELAPSED_BUILD,$ELAPSED_UPDATE_NO_CACHE,$ELAPSED_UPDATE_CACHE,$ELAPSED_RUN" >> "$output_file"
 done
