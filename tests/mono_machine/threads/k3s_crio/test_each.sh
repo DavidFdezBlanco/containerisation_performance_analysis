@@ -6,6 +6,7 @@ if [ $# -lt 1 ]; then
 fi
 
 repetitions=$1
+number=$2
 
 # Répétition de la séquence x fois
 for i in $(seq 1 $repetitions); do
@@ -22,7 +23,7 @@ for i in $(seq 1 $repetitions); do
 
   kubectl exec -it "$container_name" -- apt install -y sysbench > /dev/null
 
-  kubectl exec -it "$container_name" -- sysbench cpu run > /tmp/perf_study/test/k3s_crio/results/untreated_k3s_crio_cpu_overhead_$i.txt
+  kubectl exec -it "$container_name" -- sysbench threads --threads=$number run > /tmp/perf_study/test/k3s_crio/results/untreated_k3s_crio_threads_${number}_$i.txt
 
   # Suppression du pod
   kubectl delete pod "$container_name"

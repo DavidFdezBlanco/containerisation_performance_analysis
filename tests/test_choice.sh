@@ -121,6 +121,7 @@ for NODE_HOSTNAME in "${NODE_HOSTNAMES[@]}"; do
   scp $flags -r "$(dirname "$0")/mono_machine/$TEST/collect_and_treat_results.sh" $NODE_HOSTNAME:/tmp/perf_study/test/$CONTAINER_ENGINE/collect_and_treat_results.sh
   if [[ $TEST == "fileio" || $TEST == "threads" || $TEST == "mutex" ]]; then
     scp $flags -r "$(dirname "$0")/mono_machine/$TEST/collect_and_treat_results_each.sh" $NODE_HOSTNAME:/tmp/perf_study/test/$CONTAINER_ENGINE/collect_and_treat_results_each.sh
+    ssh $flags $NODE_HOSTNAME "chmod +x /tmp/perf_study/test/$CONTAINER_ENGINE/collect_and_treat_results_each.sh /tmp/perf_study/test/$CONTAINER_ENGINE/collect_and_treat_results.sh"
   fi
 
   OUTPUT_FILE_NAME_LOCAL="$(dirname "$0")/tmp/results/${CONTAINER_ENGINE}_${TEST}_result.csv"

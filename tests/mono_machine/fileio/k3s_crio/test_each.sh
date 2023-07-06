@@ -6,6 +6,7 @@ if [ $# -lt 1 ]; then
 fi
 
 repetitions=$1
+filetestmode=$2
 
 # Répétition de la séquence x fois
 for i in $(seq 1 $repetitions); do
@@ -22,7 +23,9 @@ for i in $(seq 1 $repetitions); do
 
   kubectl exec -it "$container_name" -- apt install -y sysbench > /dev/null
 
-  kubectl exec -it "$container_name" -- sysbench cpu run > /tmp/perf_study/test/k3s_crio/results/untreated_k3s_crio_cpu_overhead_$i.txt
+  kubectl exec -it "$container_name" -- sysbench fileio prepare > /dev/null
+
+  kubectl exec -it "$container_name" -- sysbench fileio --file-test-mode=$filetestmode run > /tmp/perf_study/test/k3s_crio/results/untreated_k3s_crio_fileio_${filetestmode}_$i.txt
 
   # Suppression du pod
   kubectl delete pod "$container_name"
