@@ -13,8 +13,7 @@ for i in $(seq 1 $repetitions); do
   # Création du pod
   container_name="container$i"
   kubectl run "$container_name" --image=ubuntu:22.04 --command -- sleep infinity
-  sleep 5
-
+  
   # Attente que le pod soit prêt
   kubectl wait --for=condition=Ready pod/"$container_name"
 
