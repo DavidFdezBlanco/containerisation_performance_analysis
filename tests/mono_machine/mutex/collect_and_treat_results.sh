@@ -11,6 +11,6 @@ engine=$3
 /tmp/perf_study/test/$engine/collect_and_treat_results_each.sh $1 $2 $3 32
 /tmp/perf_study/test/$engine/collect_and_treat_results_each.sh $1 $2 $3 64
 /tmp/perf_study/test/$engine/collect_and_treat_results_each.sh $1 $2 $3 128
-/tmp/perf_study/test/$engine/collect_and_treat_results_each.sh $1 $2 $3 256
-/tmp/perf_study/test/$engine/collect_and_treat_results_each.sh $1 $2 $3 512
-/tmp/perf_study/test/$engine/collect_and_treat_results_each.sh $1 $2 $3 1024
+# /tmp/perf_study/test/$engine/collect_and_treat_results_each.sh $1 $2 $3 256
+# /tmp/perf_study/test/$engine/collect_and_treat_results_each.sh $1 $2 $3 512
+# /tmp/perf_study/test/$engine/collect_and_treat_results_each.sh $1 $2 $3 1024
