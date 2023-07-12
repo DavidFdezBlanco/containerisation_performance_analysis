@@ -34,7 +34,7 @@ for i in $(seq 1 $repetitions); do
   echo "Update image no cache $script"
   BEFORE=$(date +'%s.%N')
   sudo lxc launch images:ubuntu/22.04 test-$script-upd-$i
-  sudo lxc file push $script test-$script-upd-$i/
+  sudo lxc file push ${script}_update.c test-$script-upd-$i/
   sudo lxc exec test-$script-upd-$i -- /bin/bash -c "apt-get update -y && apt-get install -y gcc"
   sudo lxc exec test-$script-upd-$i -- /bin/bash -c "gcc -o $script $script.c"
   sudo lxc stop test-$script-upd-$i

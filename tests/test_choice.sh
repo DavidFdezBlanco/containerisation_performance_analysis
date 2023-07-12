@@ -131,17 +131,18 @@ for NODE_HOSTNAME in "${NODE_HOSTNAMES[@]}"; do
   # SSH into the node and run the installation script
   
   if [[ $TEST == "build_update_run_time" && $MONO_MULTI == "multi_machine" ]]; then
-    ssh -n $flags $NODE_HOSTNAME "sudo chmod +x /tmp/perf_study/test/$CONTAINER_ENGINE/*.sh && cd /tmp/perf_study/test/$CONTAINER_ENGINE/; sudo ./test.sh $REPETITIONS $CLUSTER_DENSITY"
+    ssh -n $flags $NODE_HOSTNAME "sudo chmod a+x /tmp/perf_study/test/$CONTAINER_ENGINE/*.sh && cd /tmp/perf_study/test/$CONTAINER_ENGINE/; sudo ./test.sh $REPETITIONS $CLUSTER_DENSITY"
   else
-    ssh -n $flags $NODE_HOSTNAME "sudo chmod +x /tmp/perf_study/test/$CONTAINER_ENGINE/*.sh && cd /tmp/perf_study/test/$CONTAINER_ENGINE/; sudo ./test.sh $REPETITIONS"
+    ssh -n $flags $NODE_HOSTNAME "sudo chmod a+x /tmp/perf_study/test/$CONTAINER_ENGINE/*.sh && cd /tmp/perf_study/test/$CONTAINER_ENGINE/; sudo ./test.sh $REPETITIONS"
   fi
+
   # Run the collect_and_treat_result script
   scp $flags -r "$(dirname "$0")/$MONO_MULTI/$TEST/collect_and_treat_results.sh" $NODE_HOSTNAME:/tmp/perf_study/test/$CONTAINER_ENGINE/collect_and_treat_results.sh
-  if [[ $TEST == "fileio" || $TEST == "threads" || $TEST == "mutex" || $MONO_MULTI == "multi_machine" ]]; then
+  if [[ $TEST == "fileio" || $TEST == "threads" || $TEST == "mutex" || $MONO_MULTI == "multi_machine" && $TEST != "build_update_run_time" ]]; then
     scp $flags -r "$(dirname "$0")/$MONO_MULTI/$TEST/collect_and_treat_results_each.sh" $NODE_HOSTNAME:/tmp/perf_study/test/$CONTAINER_ENGINE/collect_and_treat_results_each.sh
     ssh $flags $NODE_HOSTNAME "chmod +x /tmp/perf_study/test/$CONTAINER_ENGINE/collect_and_treat_results_each.sh /tmp/perf_study/test/$CONTAINER_ENGINE/collect_and_treat_results.sh"
   fi
-  
+
   if [[ $MONO_MULTI == "mono_machine" ]]; then
   OUTPUT_FILE_NAME_LOCAL="$(dirname "$0")/tmp/results/${CONTAINER_ENGINE}_${TEST}_result.csv"
   OUTPUT_FILE_NAME_MACHINE="/tmp/perf_study/test/${CONTAINER_ENGINE}/results/${CONTAINER_ENGINE}_${TEST}_result.csv"
@@ -159,4 +160,5 @@ for NODE_HOSTNAME in "${NODE_HOSTNAMES[@]}"; do
   mkdir -p $(dirname "$0")/tmp/results/
   scp $flags -r $NODE_HOSTNAME:$OUTPUT_FILE_NAME_MACHINE $OUTPUT_FILE_NAME_LOCAL
   fi
+
 done

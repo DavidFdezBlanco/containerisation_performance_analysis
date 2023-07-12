@@ -13,12 +13,15 @@ output_file="/tmp/perf_study/test/lxd/results/untreated_lxd_${node}_build_update
 echo -e "number of cluster,machine,index,Script,Build,Update no cache,Update cache,Run" >> "$output_file"
 
 for i in $(seq 1 $repetitions); do
+
   echo "Building image $script"
   BEFORE=$(date +'%s.%N')
-  sudo lxc launch images:ubuntu/22.04 test-$script-$i
-  sudo lxc file push /tmp/perf_study/test/lxd/$script.c test-$script-$i/tmp/
+  sudo lxc launch images:ubuntu/22.04 test-$script-$i --target $node
+  sudo lxc file push /tmp/perf_study/test/lxd/$script.c test-$script-$i/
   echo "file pushed"
-  sudo lxc exec test-$script-$i -- /bin/bash -c "apt-get update && apt-get install -y gcc && gcc -o $script /tmp/$script.c"
+  sudo lxc exec test-$script-$i -- /bin/bash -c "apt-get update && apt-get install -y gcc"
+  echo "compilation file"
+  sudo lxc exec test-$script-$i -- /bin/bash -c "gcc -o $script /$script.c"
   echo "image publish"
   sudo lxc stop test-$script-$i
   sudo lxc publish test-$script-$i --alias image-test-$script-$i
@@ -30,23 +33,30 @@ for i in $(seq 1 $repetitions); do
   echo "Running image $script"
   BEFORE=$(date +'%s.%N')
   sudo lxc launch image-test-$script-$i cont-test-$script-$i --target $node
-  sudo lxc exec cont-test-$script-$i -- /$script
+  sudo lxc exec cont-test-$script-$i -- ./$script
   AFTER=$(date +'%s.%N')
   ELAPSED_RUN=$(echo "scale=9; $AFTER - $BEFORE" | bc)
   echo "Temps run : $ELAPSED_RUN secondes"
+  
+  sudo lxc stop cont-test-$script-$i
+  sudo lxc delete cont-test-$script-$i --force
+  sudo lxc image rm image-test-$script-$i
 
   echo "Update image no cache $script"
   BEFORE=$(date +'%s.%N')
-  sudo lxc launch images:ubuntu/22.04 test-$script-upd-$i
-  sudo lxc file push /tmp/perf_study/test/lxd/$script.c test-$script-upd-$i/tmp/
+  sudo lxc launch images:ubuntu/22.04 test-$script-upd-$i --target $node
+  sudo lxc file push /tmp/perf_study/test/lxd/${script}_update.c test-$script-upd-$i/
+  echo "file pushed update"
   sudo lxc exec test-$script-upd-$i -- /bin/bash -c "apt-get update -y && apt-get install -y gcc"
-  sudo lxc exec test-$script-upd-$i -- /bin/bash -c "gcc -o $script /tmp/$script.c"
+  sudo lxc exec test-$script-upd-$i -- /bin/bash -c "gcc -o ${script}_update /${script}_update.c"
   sudo lxc stop test-$script-upd-$i
   sudo lxc publish test-$script-upd-$i --alias image-test-$script-upd-$i
   sudo lxc delete test-$script-upd-$i --force
   AFTER=$(date +'%s.%N')
   ELAPSED_UPDATE_NO_CACHE=$(echo "scale=9; $AFTER - $BEFORE" | bc)
   echo "Temps de build : $ELAPSED_UPDATE_NO_CACHE secondes"
+
+  sudo lxc image rm image-test-$script-upd-$i
 
   ELAPSED_UPDATE_CACHE="Not possible"
 
