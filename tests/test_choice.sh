@@ -130,10 +130,10 @@ for NODE_HOSTNAME in "${NODE_HOSTNAMES[@]}"; do
   echo "chmod and run test.sh"
   # SSH into the node and run the installation script
   
-  if [[ $TEST == "build_update_run_time" ]]; then
-  ssh -n $flags $NODE_HOSTNAME "sudo chmod +x /tmp/perf_study/test/$CONTAINER_ENGINE/*.sh && cd /tmp/perf_study/test/$CONTAINER_ENGINE/; sudo ./test.sh $REPETITIONS $CLUSTER_DENSITY"
+  if [[ $TEST == "build_update_run_time" && $MONO_MULTI == "multi_machine" ]]; then
+    ssh -n $flags $NODE_HOSTNAME "sudo chmod +x /tmp/perf_study/test/$CONTAINER_ENGINE/*.sh && cd /tmp/perf_study/test/$CONTAINER_ENGINE/; sudo ./test.sh $REPETITIONS $CLUSTER_DENSITY"
   else
-  ssh -n $flags $NODE_HOSTNAME "sudo chmod +x /tmp/perf_study/test/$CONTAINER_ENGINE/*.sh && cd /tmp/perf_study/test/$CONTAINER_ENGINE/; sudo ./test.sh $REPETITIONS"
+    ssh -n $flags $NODE_HOSTNAME "sudo chmod +x /tmp/perf_study/test/$CONTAINER_ENGINE/*.sh && cd /tmp/perf_study/test/$CONTAINER_ENGINE/; sudo ./test.sh $REPETITIONS"
   fi
   # Run the collect_and_treat_result script
   scp $flags -r "$(dirname "$0")/$MONO_MULTI/$TEST/collect_and_treat_results.sh" $NODE_HOSTNAME:/tmp/perf_study/test/$CONTAINER_ENGINE/collect_and_treat_results.sh
