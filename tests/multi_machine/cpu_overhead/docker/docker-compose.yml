@@ -1,0 +1,11 @@
+services:
+  sysbench-cpu:
+    image: 10.0.1.110:5000/sysbench-cpu
+    build:
+      context: .
+      dockerfile: Dockerfile
+    deploy:
+      placement:
+        constraints:
+          - node.hostname==${NODE_NAME}
+    restart: on-failure
