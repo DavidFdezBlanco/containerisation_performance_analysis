@@ -1,0 +1,11 @@
+services:
+  sysbench-fileio:
+    image: 10.0.1.110:5000/sysbench-fileio-${FILETESTMODE}
+    build:
+      context: .
+      dockerfile: dockerfile_${FILETESTMODE}
+    deploy:
+      placement:
+        constraints:
+          - node.hostname==${NODE_NAME}
+    restart: on-failure

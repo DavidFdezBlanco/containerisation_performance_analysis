@@ -1,0 +1,11 @@
+services:
+  sysbench-mutex:
+    image: 10.0.1.110:5000/sysbench-mutex-${NUMBER}
+    build:
+      context: .
+      dockerfile: dockerfile_${NUMBER}
+    deploy:
+      placement:
+        constraints:
+          - node.hostname==${NODE_NAME}
+    restart: on-failure

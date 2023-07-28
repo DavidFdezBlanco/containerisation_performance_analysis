@@ -14,7 +14,7 @@ echo -e "number of cluster,machine,test_number,index,Total time,Total events,Thr
 
 for ((i = 1; i <= number_executions; i++))
 do
-    filename="/tmp/perf_study/test/$engine/results/untreated_lxd_${node}_threads_${number}_$i.txt"
+    filename="/tmp/perf_study/test/$engine/results/untreated_${engine}_${node}_threads_${number}_$i.txt"
     echo "Treating test result file: $filename ..."
     content=$(cat "$filename")
 

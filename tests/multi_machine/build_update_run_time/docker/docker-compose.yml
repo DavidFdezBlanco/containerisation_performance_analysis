@@ -1,0 +1,11 @@
+services:
+  build_update_run_time:
+    image: 10.0.1.110:5000/build_update_run_time-${SCRIPT}
+    build:
+      context: .
+      dockerfile: dockerfile_${SCRIPT}
+    deploy:
+      placement:
+        constraints:
+          - node.hostname==${NODE_NAME}
+    restart: on-failure

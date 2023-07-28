@@ -1,0 +1,11 @@
+services:
+  sysbench-memory:
+    image: 10.0.1.110:5000/sysbench-memory
+    build:
+      context: .
+      dockerfile: Dockerfile
+    deploy:
+      placement:
+        constraints:
+          - node.hostname==${NODE_NAME}
+    restart: on-failure
